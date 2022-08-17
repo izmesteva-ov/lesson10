@@ -24,6 +24,17 @@ pipeline {
           sh 'docker push 51.250.41.105:8082/'
        }
     }
+    stage('Run docker on dem02') {
+       steps {
+         sh 'ssh-keyscan -H 51.250.41.191 >> ~/.ssh/known_hosts'
+         sh '''ssh root@51.250.41.191 << EOF
+	sudo docker login  -u admin -p admindemo  51.250.41.105:8082
+	sudo docker pull 51.250.41.105:8082/myapp
+	sudo docker run -d -p 8080:8080 51.250.41.105:8082/myapp
+EOF'''
+      }
+    }	
+
   
   }
   
