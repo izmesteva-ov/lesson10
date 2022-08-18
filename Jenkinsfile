@@ -5,10 +5,7 @@ pipeline {
          args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
     }
   } 	
-  stages {
-     environment {
-       REPO_URL = '51.250.59.7:8082'                              
-    }	  
+  stages {    
     stage('git clone') {
         steps {
              git 'https://github.com/izmesteva-ov/original11.git'
@@ -20,6 +17,9 @@ pipeline {
       }
     }
     stage('Docker image') {
+         environment {
+             REPO_URL = '51.250.59.7:8082'                              
+        }	  	    
         steps {
 	     withCredentials([usernamePassword(credentialsId: 'e960d181-5wcb-35fc-cc09-096e0f5q1201', passwordVariable: 'passwd', usernameVariable: 'user')]) {              	
           sh 'docker build -t myapp .'
@@ -30,6 +30,9 @@ pipeline {
     }
   }	    
     stage('Run docker on dem02') {
+       environment {
+            REPO_URL = '51.250.59.7:8082'                              
+        }	  
        steps {
 	     withCredentials([usernamePassword(credentialsId: 'e960d181-5wcb-35fc-cc09-096e0f5q1201', passwordVariable: 'passwd', usernameVariable: 'user')]) {    
          sh 'ssh-keyscan -H 51.250.59.105 >> ~/.ssh/known_hosts'
